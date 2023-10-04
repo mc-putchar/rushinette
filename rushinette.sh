@@ -72,6 +72,7 @@ do
 	else
 		echo -e $BOLDGREEN[ "OK" ]$RESET "Test" "$i" && echo "Passed" >>$LOG
 		((ok++))
+  sleep 6 // for dramatic effect 
 	fi
 done < "$TEST_CASES"
 
