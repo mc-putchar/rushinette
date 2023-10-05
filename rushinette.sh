@@ -1,4 +1,4 @@
-# **************************************************************************** #
+#!/usr/bin/env bash ********************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
 #    rushinette.sh                                      :+:      :+:    :+:    #
@@ -6,7 +6,7 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 14:09:39 by mcutura           #+#    #+#              #
-#    Updated: 2023/10/05 10:52:09 by mcutura          ###   ########.fr        #
+#    Updated: 2023/10/05 13:14:02 by mcutura          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -96,9 +96,10 @@ do
 	while IFS=' ' read -r WIDTH HEIGHT # or was it the other way around :?
 	do
 		if [ -z "${RUSH_BONUS}" ]; then
-			sed -i "s/rush([-+]\{0,1\}[0-9]\{1,\}, [-+]\{0,1\}[0-9]\{1,\})/rush($WIDTH, $HEIGHT)/g" $MAIN
-			$COMPILE
-			>"${TMP}" ./"${BIN}"
+			rm -f "${BIN}"
+			sed -i "s/rush([-+]\{0,1\}[0-9]\{1,\}, [-+]\{0,1\}[0-9]\{1,\})/rush(${WIDTH}, ${HEIGHT})/g" "${MAIN}"
+			$COMPILE &>>"${LOG}"
+			[ -f "$BIN" ] && >"${TMP}" ./"${BIN}"
 		else
 			>"${TMP}" ./"${BIN}" "${WIDTH}" "${HEIGHT}"
 		fi
@@ -111,7 +112,7 @@ do
 			((ok++))
 			sleep 0.42s #// for dramatic effect and suspenful tensions
 		fi
-		rm -f "${TMP}"
+		echo -n >"${TMP}"
 	done < "${TEST_CASES}"
 done < <(printf '%s\n' "${RUSH_VARIANT}")
 
@@ -124,6 +125,6 @@ else
 fi
 
 # clean-up details
-rm -f ${BIN}
+rm -f "${BIN}" "${TMP}"
 >/dev/null make -C ${TESTER_DIR} fclean
 
