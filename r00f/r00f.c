@@ -6,7 +6,7 @@
 /*   By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/10 20:25:24 by plandolf          #+#    #+#             */
-/*   Updated: 2023/10/05 08:39:10 by mcutura          ###   ########.fr       */
+/*   Updated: 2023/10/05 13:39:38 by mcutura          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,25 @@ int	ft_atoi(char const *c)
 {
 	int	res;
 	int	sig;
+	int	dig;
 
 	res = 0;
 	sig = 1;
+	dig = 0;
 	if (!c)
 		return (res);
 	while (*c && (*c == 0x09 || *c == 0x20))
 		++c;
 	while (*c && (*c == 0x2B || *c == 0x2D))
 		sig *= (0x2C - *c++);
-	while (*c && *c >= 0x30 && *c <= 0x39)
-		res = res * 10 + *c++ - 0x30;
+	while (*c && *c >= 0x30 && *c <= 0x39 && ++dig < 11)
+	{
+		if (dig < 10 || res < 214748364 || (res == 214748364 && (*c < 0x38 || \
+			(*c == 0x38 && sig < 0))))
+			res = res * 10 + *c++ - 0x30;
+		else
+			return (0);
+	}
 	return (res * sig);
 }
 
