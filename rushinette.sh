@@ -60,6 +60,7 @@ GCC="gcc -Wall -Werror -Wextra"
 COMPILE="${GCC} ${PUTC} ${RUSH} ${MAIN} -o ${BIN}"
 # test cases
 TEST_CASES="${TESTER_DIR}/tests.set"
+ALLOWED_RUNTIME="10s"
 
 # recharger, si vous plait
 rm -fr "${BIN}" "${LOG}" "${TMP}"
@@ -99,9 +100,9 @@ do
 			rm -f "${BIN}"
 			sed -i "s/rush([-+]\{0,1\}[0-9]\{1,\}, [-+]\{0,1\}[0-9]\{1,\})/rush(${WIDTH}, ${HEIGHT})/g" "${MAIN}"
 			$COMPILE &>>"${LOG}"
-			[ -f "$BIN" ] && >"${TMP}" ./"${BIN}"
+			[ -f "$BIN" ] && >"${TMP}" timeout "${ALLOWED_RUNTIME}" ./"${BIN}"
 		else
-			>"${TMP}" ./"${BIN}" "${WIDTH}" "${HEIGHT}"
+			>"${TMP}" timeout "${ALLOWED_RUNTIME}" ./"${BIN}" "${WIDTH}" "${HEIGHT}"
 		fi
 		((i++))
 		echo -e "TEST" "$i" "||" "$WIDTH $HEIGHT" >>$LOG
