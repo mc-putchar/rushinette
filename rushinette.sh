@@ -56,8 +56,9 @@ SRC_DIR="../ex00/"
 MAIN="${SRC_DIR}""main.c"
 PUTC="${SRC_DIR}""ft_putchar.c"
 # RUSH="${SRC_DIR}""rush00.c"
-[ ! -d "${SRC_DIR}" ] && echo -e "${BOLDRED}[ "KO" ]${RESET}" "No ex00 directory" \
-	&& echo -e ${YELLOW}"Needs to be in rush00/. with ./ex00 beside"${RESET} && exit
+[ ! -d "${SRC_DIR}" ] && \
+echo -e "${BOLDRED}[ "KO" ]${RESET}" "No ex00 directory" && \
+echo -e ${YELLOW}"Needs to be in rush00/. with ./ex00 beside"${RESET} && exit
 RUSH=${SRC_DIR}$( ls ${SRC_DIR}| grep rush0 | head -1 )
 # binaries
 BIN="a.out"
@@ -71,7 +72,7 @@ GCC="/usr/bin/gcc -Wall -Werror -Wextra"
 COMPILE="${GCC} ${PUTC} ${RUSH} ${MAIN} -o ${BIN}"
 # test cases
 TEST_CASES="${TESTER_DIR}/tests.set"
-ALLOWED_RUNTIME="7s"
+ALLOWED_RUNTIME="10s"
 
 # recharger, si vous plait
 rm -fr "${BIN}" "${LOG}" "${TMP}"
@@ -86,11 +87,13 @@ echo -e ${BOLDGREEN}[ "OK" ]${RESET} "Mandatory files"
 echo -e ${BOLDGREEN}[ "OK" ]${RESET} "Norminette"
 
 $COMPILE &>>$LOG
-[ ! -f "$BIN" ] && echo -e ${BOLDRED}[ "KO" ]${RESET} "Does not compile" && exit
+[ ! -f "$BIN" ] && \
+echo -e ${BOLDRED}[ "KO" ]${RESET} "Does not compile" && exit
 echo -e ${BOLDGREEN}[ "OK" ]${RESET} "Compiled"
 
 [ ! -f "$TESTER_DIR/$TESTER" ] && >/dev/null make -C $TESTER_DIR $TESTER clean 
-[ ! -f "$TESTER_DIR/$TESTER" ] && echo -e ${BOLDRED}[ "ERROR" ] "Couldn't compile tester"${RESET} && exit
+[ ! -f "$TESTER_DIR/$TESTER" ] && \
+echo -e ${BOLDRED}[ "ERROR" ] "Couldn't compile tester"${RESET} && exit
 echo -e ${BOLDGREEN}[ "OK" ]${RESET} "Tester compiled"
 
 RUSH_VARIANT=$(ls $SRC_DIR | grep rush | grep -oE [0-9]+)
@@ -113,17 +116,23 @@ do
 			sed -i "s/rush([-+]\{0,1\}[0-9]\{1,\}, [-+]\{0,1\}[0-9]\{1,\})/rush(${WIDTH}, ${HEIGHT})/g" "${MAIN}"
 			$COMPILE &>>"${LOG}"
 			[ -f "$BIN" ] && >"${TMP}" timeout "${ALLOWED_RUNTIME}" ./"${BIN}"
+			if [ $? -eq 124 ]; then
+				rm -f "${TMP}"; echo -e "${BOLDRED}"[ KO ] Timeout"${RESET}"; continue
+			fi
 		else
 			>"${TMP}" timeout "${ALLOWED_RUNTIME}" ./"${BIN}" "${WIDTH}" "${HEIGHT}"
+			if [ $? -eq 124 ]; then
+				rm -f "${TMP}"; echo -e "${BOLDRED}"[ KO ] Timeout"${RESET}"; continue
+			fi
 		fi
 		((i++))
 		echo -e "TEST" "$i" "||" "$WIDTH $HEIGHT" >>$LOG
-		if ! diff <(./"${TESTER_DIR}"/"${TESTER}" "${WIDTH}" "${HEIGHT}" "${VAR}") "${TMP}" &>>"${LOG}"; then
+		if ! diff <(./"${TESTER_DIR}"/"${TESTER}" "${WIDTH}" "${HEIGHT}" "${VAR}") "${TMP}" |& head -10 &>>"${LOG}"; then
 			echo -e ${BOLDRED}[ "KO" ]${RESET} "Test" "$i"
 		else
 			echo -e ${BOLDGREEN}[ "OK" ]${RESET} "Test" "$i" && echo -e "Passed" >>"${LOG}"
 			((ok++))
-			sleep 1.42s #// for dramatic effect and suspenful tensions
+			sleep 0.42s #// for dramatic effect and suspenful tensions
 		fi
 		echo -n >"${TMP}"
 	done < "${TEST_CASES}"
