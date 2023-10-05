@@ -6,7 +6,7 @@
 /*   By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/10 20:30:57 by mcutura           #+#    #+#             */
-/*   Updated: 2023/10/03 03:02:01 by mcutura          ###   ########.fr       */
+/*   Updated: 2023/10/05 08:33:34 by mcutura          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,7 @@
 
 int	main(int ac, char **av)
 {
-	if (!ac)
-		return (1);
-	if (r00f(ac, av))
+	if (!ac || r00f(ac, av))
 		return (1);
 	return (0);
 }

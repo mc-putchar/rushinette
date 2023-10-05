@@ -6,7 +6,7 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 14:09:39 by mcutura           #+#    #+#              #
-#    Updated: 2023/10/04 14:53:11 by mcutura          ###   ########.fr        #
+#    Updated: 2023/10/05 10:52:09 by mcutura          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ CYAN="\e[36m"
 YELLOW="\e[33m"
 
 # bussiness
-echo \
+echo -e \
 "####################################################################
 #${CYAN}__________             .__    .__               __    __          ${RESET}#
 #${CYAN}\\______   \\__ __  _____|  |__ |__| ____   _____/  |__/  |_  ____  ${RESET}#
@@ -32,78 +32,97 @@ echo \
 ##       ${BOLDMAGENTA}by:        mc-putchar${RESET}                                    ##
 ####################################################################"
 
-echo ${BOLDMAGENTA}Loading...${RESET}
-if [ -z"${USER_42}" ]; then
+echo -e "${BOLDMAGENTA}Loading...${RESET}"
+if [ -z "${USER_42}" ]; then
 	sleep 4.02s #TODO: add removal via premium subscription
 else
-	echo "Welcome" "${USER}"
+	echo -e "Cheers" "${CYAN}${USER}${RESET}"
 fi
 
 # serious
+NORMIE="/usr/bin/norminette"
 SRC_DIR="../ex00/"
-MAIN="$SRC_DIR""main.c"
-PUTC="$SRC_DIR""ft_putchar.c"
-# RUSH="$SRC_DIR""rush00.c"
-[ ! -d "$SRC_DIR" ] && echo ${BOLDRED}[ "KO" ]${RESET} "No ex00 directory" \
-	&& echo $YELLOW"Needs to be in rush00/. with ./ex00 beside"${RESET} && exit
-RUSH=$SRC_DIR$(ls $SRC_DIR|grep rush)
+MAIN="${SRC_DIR}""main.c"
+PUTC="${SRC_DIR}""ft_putchar.c"
+# RUSH="${SRC_DIR}""rush00.c"
+[ ! -d "${SRC_DIR}" ] && echo -e "${BOLDRED}[ "KO" ]${RESET}" "No ex00 directory" \
+	&& echo -e ${YELLOW}"Needs to be in rush00/. with ./ex00 beside"${RESET} && exit
+RUSH=${SRC_DIR}$( ls ${SRC_DIR}| grep rush0 | head -1 )
 # binaries
 BIN="a.out"
 TESTER_DIR="r00f"
 TESTER="r00f"
 # output
 LOG="trace.log"
+TMP="/tmp/not_so_important_file"
 # compilation
 GCC="gcc -Wall -Werror -Wextra"
-COMPILE="$GCC $PUTC $RUSH $MAIN -o $BIN"
+COMPILE="${GCC} ${PUTC} ${RUSH} ${MAIN} -o ${BIN}"
 # test cases
-TEST_CASES="$TESTER_DIR/tests.set"
+TEST_CASES="${TESTER_DIR}/tests.set"
 
-rm -f $BIN $LOG
+# recharger, si vous plait
+rm -fr "${BIN}" "${LOG}" "${TMP}"
 
+[ ! -f "${MAIN}" -o ! -f "${PUTC}" -o ! -f "${RUSH}" ] && \
+echo -e ${BOLDRED}[ "KO" ]${RESET}"Mandatory file missing" && exit
+echo -e ${BOLDGREEN}[ "OK" ]${RESET} "Mandatory files"
 
-[ ! -f "$MAIN" -o ! -f "$PUTC" -o ! -f "$RUSH" ] && \
-echo ${BOLDRED}[ "KO" ]${RESET}"Mandatory file missing" && exit
-echo ${BOLDGREEN}[ "OK" ]${RESET} "Mandatory files"
-
-(/usr/bin/norminette -R CheckForbiddenSourceHeader $SRC_DIR | grep 'Error' >> $LOG) \
-&& echo ${BOLDRED}[ "KO" ]${RESET} "Norminette" && exit
-echo ${BOLDGREEN}[ "OK" ]${RESET} "Norminette"
+( ${NORMIE} -R CheckForbiddenSourceHeader $SRC_DIR | grep 'Error' >> $LOG) \
+&& echo -e ${BOLDRED}[ "KO" ]${RESET} "Norminette" && exit
+echo -e ${BOLDGREEN}[ "OK" ]${RESET} "Norminette"
 
 $COMPILE &>>$LOG
-[ ! -f "$BIN" ] && echo ${BOLDRED}[ "KO" ]${RESET} "Does not compile" && exit
-echo ${BOLDGREEN}[ "OK" ]${RESET} "Compiled"
+[ ! -f "$BIN" ] && echo -e ${BOLDRED}[ "KO" ]${RESET} "Does not compile" && exit
+echo -e ${BOLDGREEN}[ "OK" ]${RESET} "Compiled"
 
 [ ! -f "$TESTER_DIR/$TESTER" ] && >/dev/null make -C $TESTER_DIR $TESTER clean 
-[ ! -f "$TESTER_DIR/$TESTER" ] && echo ${BOLDRED}[ "ERROR" ] "Couldn't compile tester"${RESET} && exit
-echo ${BOLDGREEN}[ "OK" ]${RESET} "Tester compiled"
+[ ! -f "$TESTER_DIR/$TESTER" ] && echo -e ${BOLDRED}[ "ERROR" ] "Couldn't compile tester"${RESET} && exit
+echo -e ${BOLDGREEN}[ "OK" ]${RESET} "Tester compiled"
 
-RUSH_VARIANT=$(ls $SRC_DIR | egrep -o [0-9]+ | tail -1)
+RUSH_VARIANT=$(ls $SRC_DIR | grep rush | grep -oE [0-9]+)
+RUSH_COUNT=$(echo "${RUSH_VARIANT}" |wc -l)
+if (("${RUSH_COUNT}" > 1)); then
+	echo Found solutions for "${RUSH_COUNT}" variants | tee -a "${LOG}"
+else
+	echo Identified as rush "${RUSH_VARIANT}" | tee -a "${LOG}"
+fi
 
 i=0
 ok=0
-while IFS=' ' read -r WIDTH HEIGHT
+while read -r VAR
 do
-	sed -i "s/rush([-+]\{0,1\}[0-9]\{1,\}, [-+]\{0,1\}[0-9]\{1,\})/rush($HEIGHT, $WIDTH)/g" $MAIN
-	$COMPILE
-	((i++))
-	echo "TEST" "$i" "||" "$WIDTH $HEIGHT" >>$LOG
-	if ! >>$LOG diff --normal --color <${./$TESTER_DIR/$TESTER $WIDTH $HEIGHT $RUSH_VARIANT} <${./$BIN}
-	then
-		echo -e $BOLDRED[ "KO" ]$RESET "Test" "$i"
-	else
-		echo -e $BOLDGREEN[ "OK" ]$RESET "Test" "$i" && echo "Passed" >>$LOG
-		((ok++))
-		sleep 420s #// for dramatic effect and more drama
-	fi
-done < "$TEST_CASES"
+	echo Testing variant "${VAR}" | tee -a "${LOG}"
+	while IFS=' ' read -r WIDTH HEIGHT # or was it the other way around :?
+	do
+		if [ -z "${RUSH_BONUS}" ]; then
+			sed -i "s/rush([-+]\{0,1\}[0-9]\{1,\}, [-+]\{0,1\}[0-9]\{1,\})/rush($WIDTH, $HEIGHT)/g" $MAIN
+			$COMPILE
+			>"${TMP}" ./"${BIN}"
+		else
+			>"${TMP}" ./"${BIN}" "${WIDTH}" "${HEIGHT}"
+		fi
+		((i++))
+		echo -e "TEST" "$i" "||" "$WIDTH $HEIGHT" >>$LOG
+		if ! diff <(./"${TESTER_DIR}"/"${TESTER}" "${WIDTH}" "${HEIGHT}" "${VAR}") "${TMP}" &>>"${LOG}"; then
+			echo -e ${BOLDRED}[ "KO" ]${RESET} "Test" "$i"
+		else
+			echo -e ${BOLDGREEN}[ "OK" ]${RESET} "Test" "$i" && echo -e "Passed" >>"${LOG}"
+			((ok++))
+			sleep 0.42s #// for dramatic effect and suspenful tensions
+		fi
+		rm -f "${TMP}"
+	done < "${TEST_CASES}"
+done < <(printf '%s\n' "${RUSH_VARIANT}")
 
-echo ${BOLDMAGENTA}"Passed" $ok "/" $i "tests"${RESET}
-
-[ $ok -eq $i ]
-then
-	echo ${BOLDGREEN}"[ Congratulations ]${RESET} All tests passed!"
+# drumroll........ results
+echo "   ..."; sleep 2s
+if [ $ok -eq $i ]; then
+	echo -e "${BOLDGREEN}[ Congratulations ]${RESET} All tests passed!"
+else
+	echo -e "${BOLDMAGENTA}Passed $ok / $i tests${RESET}"
 fi
+
 # clean-up details
 rm -f ${BIN}
 >/dev/null make -C ${TESTER_DIR} fclean

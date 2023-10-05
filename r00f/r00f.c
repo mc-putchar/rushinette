@@ -6,7 +6,7 @@
 /*   By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/10 20:25:24 by plandolf          #+#    #+#             */
-/*   Updated: 2023/10/03 03:11:43 by mcutura          ###   ########.fr       */
+/*   Updated: 2023/10/05 08:39:10 by mcutura          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	init_stuff(int ac, char **av, t_r00f *r00f)
 		tmpw = ft_atoi(av[1]);
 	if (ac > 2)
 		tmph = ft_atoi(av[2]);
-	if (tmph < 0 || tmpw < 0)
+	if (ac < 3 || tmph < 1 || tmpw < 1)
 		return (1);
 	r00f->height = (size_t)tmph;
 	r00f->width = (size_t)tmpw;

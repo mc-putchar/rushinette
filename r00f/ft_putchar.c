@@ -6,7 +6,7 @@
 /*   By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/10 20:39:57 by mcutura           #+#    #+#             */
-/*   Updated: 2023/10/03 03:09:40 by mcutura          ###   ########.fr       */
+/*   Updated: 2023/10/05 08:32:25 by mcutura          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ ssize_t	ft_putchar(char c)
 
 ssize_t	mc_putchar(int fd, void *mc, size_t size, int mode)
 {
-	if (mode == PRINTABLE)
+	if (fd >= 0 && mode == PRINTABLE)
 		return (write(fd, (char const *)mc, size));
 	return (0);
 }

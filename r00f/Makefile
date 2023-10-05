@@ -6,12 +6,11 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/02 22:11:12 by mcutura           #+#    #+#              #
-#    Updated: 2023/10/03 07:25:30 by mcutura          ###   ########.fr        #
+#    Updated: 2023/10/05 08:37:04 by mcutura          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # --- USAGE ---
-
 # make			compile the project to an executable file
 # make r00f		^same
 # make all		^same
@@ -39,7 +38,7 @@ RM		:=	rm -fr	#remove french translations
 CC		:=	gcc
 MKDIR	:=	mkdir -p
 NORM	:=	norminette -R CheckForbiddenSourceHeader
-TESTER	:=	tester.sh
+#TESTER	:=	tester.sh
 
 # --- FLAGS ---
 CFLAGS	:=	-Wall -Wextra -Werror
@@ -54,7 +53,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 $(OBJ_DIR):
 	@$(MKDIR) $(OBJ_DIR)
 
-all:	$(NAME)
+all: $(NAME)
 
 clean:
 	@$(RM) $(OBJS)
@@ -67,9 +66,9 @@ norm:
 
 re: fclean $(NAME)
 
-tester:
-	@chmod +x $(TESTER)
-	@./$(TESTER)
+#tester:
+#	@chmod +x $(TESTER)
+#	@./$(TESTER)
 
 # --- TOTALLY FAKE ---
 .PHONY:	all clean fclean norm re tester
