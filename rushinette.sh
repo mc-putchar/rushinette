@@ -19,17 +19,28 @@ BOLDMAGENTA="\e[1m\e[35m"
 CYAN="\e[36m"
 YELLOW="\e[33m"
 
-# bussiness
+# serious
 echo -e \
 "####################################################################
-#${CYAN}__________             .__    .__               __    __          ${RESET}#
-#${CYAN}\\______   \\__ __  _____|  |__ |__| ____   _____/  |__/  |_  ____  ${RESET}#
-#${CYAN} |       _/  |  \\/  ___/  |  \\|  |/    \\_/ __ \\   __\\   __\\/ __ \\ ${RESET}#
-#${CYAN} |    |   \\  |  /\\___ \\|   Y  \\  |   |  \\  ___/|  |  |  | \\  ___/ ${RESET}#
-#${CYAN} |____|_  /____//____  >___|  /__|___|  /\\___  >__|  |__|  \\___  >${RESET}#
-#${CYAN}        \\/           \\/     \\/        \\/     \\/                \\/ ${RESET}#
+#${CYAN}__________             .__    .__               __    __          \
+${RESET}#
+#${CYAN}\\______   \\__ __  _____|  |__ |__| ____   _____/  |__/  |_  ____  \
+${RESET}#
+#${CYAN} |       _/  |  \\/  ___/  |  \\|  |/    \
+\\_/ __ \\   __\\   __\\/ __ \\ \
+${RESET}#
+#${CYAN} |    |   \\  |  /\\___ \\|   Y  \\  |   |  \
+\\  ___/|  |  |  | \\  ___/ \
+${RESET}#
+#${CYAN} |____|_  /____//____  >___|  /__|___|  /\\___  \
+>__|  |__|  \\___  >\
+${RESET}#
+#${CYAN}        \\/           \\/     \\/        \\/     \
+\\/                \\/ \
+${RESET}#
 ####################################################################
-##       ${BOLDMAGENTA}by:        mc-putchar${RESET}                                    ##
+##       ${BOLDMAGENTA}by:        mc-putchar \
+${RESET}                                   ##
 ####################################################################"
 
 echo -e "${BOLDMAGENTA}Loading...${RESET}"
@@ -39,7 +50,7 @@ else
 	echo -e "Cheers" "${CYAN}${USER}${RESET}"
 fi
 
-# serious
+# bussiness
 NORMIE="/usr/bin/norminette"
 SRC_DIR="../ex00/"
 MAIN="${SRC_DIR}""main.c"
@@ -56,14 +67,15 @@ TESTER="r00f"
 LOG="trace.log"
 TMP="/tmp/not_so_important_file"
 # compilation
-GCC="gcc -Wall -Werror -Wextra"
+GCC="/usr/bin/gcc -Wall -Werror -Wextra"
 COMPILE="${GCC} ${PUTC} ${RUSH} ${MAIN} -o ${BIN}"
 # test cases
 TEST_CASES="${TESTER_DIR}/tests.set"
-ALLOWED_RUNTIME="10s"
+ALLOWED_RUNTIME="7s"
 
 # recharger, si vous plait
 rm -fr "${BIN}" "${LOG}" "${TMP}"
+# removed french
 
 [ ! -f "${MAIN}" -o ! -f "${PUTC}" -o ! -f "${RUSH}" ] && \
 echo -e ${BOLDRED}[ "KO" ]${RESET}"Mandatory file missing" && exit
@@ -86,7 +98,7 @@ RUSH_COUNT=$(echo "${RUSH_VARIANT}" |wc -l)
 if (("${RUSH_COUNT}" > 1)); then
 	echo Found solutions for "${RUSH_COUNT}" variants | tee -a "${LOG}"
 else
-	echo Identified as rush "${RUSH_VARIANT}" | tee -a "${LOG}"
+	echo Identified as rush"${RUSH_VARIANT}" | tee -a "${LOG}"
 fi
 
 i=0
@@ -111,14 +123,14 @@ do
 		else
 			echo -e ${BOLDGREEN}[ "OK" ]${RESET} "Test" "$i" && echo -e "Passed" >>"${LOG}"
 			((ok++))
-			sleep 0.42s #// for dramatic effect and suspenful tensions
+			sleep 1.42s #// for dramatic effect and suspenful tensions
 		fi
 		echo -n >"${TMP}"
 	done < "${TEST_CASES}"
 done < <(printf '%s\n' "${RUSH_VARIANT}")
 
 # drumroll........ results
-echo "   ..."; sleep 2s
+echo "   ..."; sleep 1.42s
 if [ $ok -eq $i ]; then
 	echo -e "${BOLDGREEN}[ Congratulations ]${RESET} All tests passed!"
 else
