@@ -117,12 +117,12 @@ do
 			$COMPILE &>>"${LOG}"
 			[ -f "$BIN" ] && >"${TMP}" timeout "${ALLOWED_RUNTIME}" ./"${BIN}"
 			if [ $? -eq 124 ]; then
-				rm -f "${TMP}"; echo -e "${BOLDRED}"[ KO ] Timeout"${RESET}"; continue
+				rm -f "${TMP}"; echo -e "${BOLDRED}"[ KO ] Timeout"${RESET}"; ((i++)); continue
 			fi
 		else
 			>"${TMP}" timeout "${ALLOWED_RUNTIME}" ./"${BIN}" "${WIDTH}" "${HEIGHT}"
 			if [ $? -eq 124 ]; then
-				rm -f "${TMP}"; echo -e "${BOLDRED}"[ KO ] Timeout"${RESET}"; continue
+				rm -f "${TMP}"; echo -e "${BOLDRED}"[ KO ] Timeout"${RESET}"; ((i++)); continue
 			fi
 		fi
 		((i++))
