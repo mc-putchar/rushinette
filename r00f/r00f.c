@@ -6,7 +6,7 @@
 /*   By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/10 20:25:24 by plandolf          #+#    #+#             */
-/*   Updated: 2023/10/05 13:39:38 by mcutura          ###   ########.fr       */
+/*   Updated: 2023/10/05 14:12:46 by mcutura          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,21 @@ int	ft_atoi(char const *c)
 	return (res * sig);
 }
 
-static int	init_stuff(int ac, char **av, t_r00f *r00f)
+static void	get_type(int ac, char **av, t_r00f *r00f)
 {
 	int	i;
+
+	if (ac > 3)
+		r00f->type = ft_atoi(av[3]);
+	if (r00f->type < 0 || r00f->type > 4)
+		r00f->type = 0;
+	i = -1;
+	while (++i < MAX_LEGEND)
+		r00f->legend[i] = g_schema[r00f->type][i];
+}
+
+static int	init_stuff(int ac, char **av, t_r00f *r00f)
+{
 	int	tmpw;
 	int	tmph;
 
@@ -58,15 +70,15 @@ static int	init_stuff(int ac, char **av, t_r00f *r00f)
 	r00f->width = (size_t)tmpw;
 	r00f->map_len = r00f->height * r00f->width;
 	if (r00f->map_len >= BUFFERSIZE)
-		return (1);
+	{
+		r00f->map = malloc(r00f->map_len);
+		if (!r00f->map)
+			return (1);
+	}
+	else
+		r00f->map = &r00f->stack[0];
 	r00f->map[r00f->map_len - 1] = 0;
-	if (ac > 3)
-		r00f->type = ft_atoi(av[3]);
-	if (r00f->type < 0 || r00f->type > 4)
-		r00f->type = 0;
-	i = -1;
-	while (++i < MAX_LEGEND)
-		r00f->legend[i] = g_schema[r00f->type][i];
+	get_type(ac, av, r00f);
 	return (0);
 }
 

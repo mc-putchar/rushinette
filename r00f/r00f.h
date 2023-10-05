@@ -6,7 +6,7 @@
 /*   By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/02 23:20:35 by mcutura           #+#    #+#             */
-/*   Updated: 2023/10/03 03:03:56 by mcutura          ###   ########.fr       */
+/*   Updated: 2023/10/05 14:10:08 by mcutura          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,9 @@
 #  define BUFFERSIZE	0x3FFFFF
 # endif
 
-/* library for write syscall */
+/* libraries for syscalls */
 # include <unistd.h>
+# include <stdlib.h>
 
 /* constants TL TR BL BR T B L R*/
 # define MAX_LEGEND	9
@@ -41,7 +42,8 @@ typedef struct s_r00f
 	size_t	legend_len;
 	char	legend[MAX_LEGEND];
 	size_t	map_len;
-	char	map[BUFFERSIZE];
+	char	*map;
+	char	stack[BUFFERSIZE];
 }	t_r00f;
 
 /* prototypes */
